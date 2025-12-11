@@ -1,17 +1,44 @@
-# 프로젝트 설정 가이드
+# Notification Service - 프로젝트 설정 가이드
 
-이 문서는 프로젝트의 이슈/PR 관리 시스템에 대한 모든 정보를 담고 있습니다.
+이 문서는 Notification Service의 프로젝트 설정 및 이슈/PR 관리 시스템에 대한 정보를 담고 있습니다.
 AI 어시스턴트(Claude Code)가 이 문서를 읽고 자동으로 이슈와 PR을 관리합니다.
 
 ---
 
-## 📌 프로젝트 정보
+## 프로젝트 개요
+
+### 서비스 목적
+MSA 환경에서 다른 서비스들의 알림 발송 요청을 처리하는 통합 알림 서비스
+
+### 핵심 기능
+- **다채널 알림 발송**: 이메일, SMS, 앱 푸시, 인앱 알림
+- **수신 동의 관리**: Kafka 이벤트로 User Service에서 동의 정보 수신 및 저장
+- **동기/비동기 지원**: REST API(즉시 발송) + Kafka(대량/비동기 발송)
+- **발송 이력 관리**: 발송 결과 저장 및 통계
+
+### 기존 시스템 호환성
+- 기존 Mail Server의 `email-confirm-request` 토픽 및 `EmailConfirmEvent` 스키마 유지
+
+---
+
+## 프로젝트 정보
 
 ### 기본 정보
-- **저장소**: DDINGJOO/TEAMBIND_REPO_SETTUP
+- **저장소**: Bander/NOTIFICATION_SERVICE_SERVER
 - **메인 브랜치**: main
 - **개발 브랜치**: develop
 - **기본 브랜치 전략**: Feature Branch Workflow
+
+### 기술 스택
+| 분류 | 기술 |
+|------|------|
+| Framework | Spring Boot 3.x |
+| Database | PostgreSQL |
+| Cache | Redis |
+| Message Broker | Apache Kafka |
+| Email | Gmail SMTP |
+| SMS | Solapi |
+| Push | FCM (Firebase Cloud Messaging) |
 
 ### 브랜치 네이밍 규칙
 - `feature/기능명` - 새로운 기능 개발
@@ -454,8 +481,40 @@ PR 만들어드릴까요?
 
 ---
 
-## 📅 마지막 업데이트
+## Kafka 토픽 및 이벤트 스키마
 
-- **날짜**: 2025-10-14
-- **작성자**: AI Assistant (Claude Code)
-- **버전**: 1.0
+### 기존 호환 토픽
+| 토픽명 | 용도 | 이벤트 스키마 |
+|--------|------|--------------|
+| `email-confirm-request` | 이메일 인증 발송 | `EmailConfirmEvent` |
+
+### 신규 토픽 (예정)
+| 토픽명 | 용도 | 이벤트 스키마 |
+|--------|------|--------------|
+| `user-consent-event` | 사용자 동의 정보 수신 | `UserConsentEvent` |
+| `notification-request` | 통합 알림 발송 요청 | `NotificationRequestEvent` |
+
+### EmailConfirmEvent (기존 호환)
+```json
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
+```
+
+---
+
+## 문서 참조
+
+| 문서 | 설명 |
+|------|------|
+| [INDEX.md](INDEX.md) | 문서 네비게이션 |
+| [INFO.md](INFO.md) | 프로젝트 개요 |
+| [ISSUE_GUIDE.md](ISSUE_GUIDE.md) | 이슈 작성 가이드 |
+| [NOTIFICATION_REQUIREMENTS.md](requirements/NOTIFICATION_REQUIREMENTS.md) | 비즈니스 요구사항 |
+| [ARCHITECTURE_ANALYSIS.md](architecture/ARCHITECTURE_ANALYSIS.md) | 아키텍처 분석 |
+| [DOMAIN_MODEL_DESIGN.md](architecture/DOMAIN_MODEL_DESIGN.md) | 도메인 모델 설계 |
+
+---
+
+**Last Updated**: 2025-12-11

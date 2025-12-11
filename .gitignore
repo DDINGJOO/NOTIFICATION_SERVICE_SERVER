@@ -1,0 +1,14 @@
+# Claude Code
+.claude/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# macOS
+.DS_Store
+
+# Logs
+*.log

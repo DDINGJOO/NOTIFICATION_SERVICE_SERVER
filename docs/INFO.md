@@ -1,19 +1,96 @@
-# 프로젝트 자동화 시스템
+# Notification Service - 프로젝트 정보
 
-이 프로젝트는 GitHub Issues, Pull Requests, 그리고 라벨링을 자동화하는 시스템입니다.
+> **Version**: 1.0.0
+> **Team**: Bander Backend Team
+> **Tech Stack**: Spring Boot 3.x, PostgreSQL, Redis, Kafka, FCM, Solapi
 
-## 📋 목차
+---
 
-- [주요 기능](#주요-기능)
+## 프로젝트 개요
+
+**Notification Service**는 MSA 환경에서 다양한 알림 채널(이메일, SMS, 앱 푸시, 인앱 알림)을 통합 관리하는 서비스입니다.
+
+**핵심 기능**:
+- 다채널 알림 발송 (이메일, SMS, 앱 푸시, 인앱 알림)
+- 사용자 수신 동의 기반 필터링
+- 동기/비동기 발송 지원
+- 발송 이력 관리 및 통계
+
+**아키텍처**: Hexagonal Architecture + DDD + Event-Driven
+
+---
+
+## 문서 구조
+
+```
+docs/
+├── INDEX.md                    # 문서 네비게이션 가이드
+├── INFO.md                     # 프로젝트 개요 및 GitHub 자동화 (현재 문서)
+├── ISSUE_GUIDE.md              # 이슈 작성 가이드
+├── PROJECT_SETUP.md            # 프로젝트 설정 및 워크플로우
+│
+├── requirements/               # 요구사항 문서
+│   └── NOTIFICATION_REQUIREMENTS.md
+│
+└── architecture/               # 아키텍처 문서
+    ├── ARCHITECTURE_ANALYSIS.md
+    └── DOMAIN_MODEL_DESIGN.md
+```
+
+---
+
+## 목차
+
+- [핵심 기능](#핵심-기능)
+- [기술 스택](#기술-스택)
 - [자동 라벨링 시스템](#자동-라벨링-시스템)
 - [이슈 관리](#이슈-관리)
 - [PR 자동화](#pr-자동화)
 - [사용 가이드](#사용-가이드)
+- [문서 참조](#문서-참조)
 
 ---
 
-## 🎯 주요 기능
+## 핵심 기능
 
+### 알림 채널
+| 채널 | 외부 연동 | 용도 |
+|------|-----------|------|
+| **이메일** | Gmail SMTP | 본인인증, 예약확인, 마케팅 |
+| **SMS** | Solapi | 본인인증, 예약확인, 마케팅 |
+| **앱 푸시** | FCM (Firebase) | 실시간 알림, 마케팅 |
+| **인앱 알림** | 자체 구현 | 서비스 내 알림 |
+
+### 알림 유형
+| 유형 | 수신 동의 | 야간 발송 | 설명 |
+|------|-----------|-----------|------|
+| **트랜잭션** | 불필요 | 허용 | 본인인증, 비밀번호 재설정 등 |
+| **서비스** | 선택적 | 허용 | 예약 확인, 주문 완료 등 |
+| **광고/마케팅** | 필수 | 동의 시만 | 프로모션, 이벤트 등 |
+
+### 통신 방식
+- **동기 (REST API)**: 본인인증 SMS/이메일 등 즉시 발송 필요 시
+- **비동기 (Kafka)**: 대량 발송, 마케팅 알림 등
+
+---
+
+## 기술 스택
+
+| 분류 | 기술 |
+|------|------|
+| **Framework** | Spring Boot 3.x |
+| **Database** | PostgreSQL (발송 이력, 동의 정보) |
+| **Cache** | Redis (동의 정보 캐싱, 중복 방지) |
+| **Message Broker** | Apache Kafka |
+| **Email** | Gmail SMTP (기존 호환) |
+| **SMS** | Solapi API |
+| **Push** | Firebase Cloud Messaging (FCM) |
+
+---
+
+## GitHub 자동화
+
+### 주요 기능
 1. **자동 라벨링**: PR 생성 시 변경된 파일 경로에 따라 자동으로 라벨 부여
 2. **이슈 템플릿**: Epic, Story, Task, Spike, Change Request 템플릿 제공
 3. **이슈 자동 닫기**: PR 머지 시 연결된 이슈 자동으로 닫힘
@@ -229,13 +306,20 @@ git push
 
 ---
 
-## 📚 추가 문서
+## 문서 참조
 
-- [프로젝트 설정 가이드](PROJECT_SETUP.md) - AI 어시스턴트용 상세 가이드
-- [이슈 작성 가이드](ISSUE_GUIDE.md) - 이슈 타입별 작성 예시
+### 필수 문서
+| 문서 | 설명 | 대상 |
+|------|------|------|
+| [INDEX.md](INDEX.md) | 문서 네비게이션 가이드 | 전체 |
+| [NOTIFICATION_REQUIREMENTS.md](requirements/NOTIFICATION_REQUIREMENTS.md) | 비즈니스 요구사항 | 전체 |
+| [ARCHITECTURE_ANALYSIS.md](architecture/ARCHITECTURE_ANALYSIS.md) | 아키텍처 분석 및 결정 | 개발자 |
+| [DOMAIN_MODEL_DESIGN.md](architecture/DOMAIN_MODEL_DESIGN.md) | 도메인 모델 설계 | 개발자 |
+
+### 프로젝트 관리
+- [PROJECT_SETUP.md](PROJECT_SETUP.md) - AI 어시스턴트용 상세 가이드
+- [ISSUE_GUIDE.md](ISSUE_GUIDE.md) - 이슈 타입별 작성 예시
 
 ---
 
-## 🤝 기여
-
-이슈나 개선 사항이 있으시면 GitHub Issues로 등록해주세요!
+**Last Updated**: 2025-12-11
