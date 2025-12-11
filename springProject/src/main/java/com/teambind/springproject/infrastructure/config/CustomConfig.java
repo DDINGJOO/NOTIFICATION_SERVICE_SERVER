@@ -1,4 +1,4 @@
-package com.teambind.springproject.common.config;
+package com.teambind.springproject.infrastructure.config;
 
 import com.teambind.springproject.common.util.generator.PrimaryKeyGenerator;
 import com.teambind.springproject.common.util.generator.Snowflake;
