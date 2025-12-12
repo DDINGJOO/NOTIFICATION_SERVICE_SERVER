@@ -31,4 +31,6 @@ public interface NotificationHistoryJpaRepository extends JpaRepository<Notifica
             @Param("userId") String userId,
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to);
+
+    List<NotificationHistoryEntity> findByStatusOrderByCreatedAtDesc(NotificationStatus status);
 }
