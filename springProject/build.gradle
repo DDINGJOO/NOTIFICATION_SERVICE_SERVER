@@ -35,6 +35,9 @@ dependencies {
     // Kafka
     implementation 'org.springframework.kafka:spring-kafka'
 
+    // Firebase Cloud Messaging
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     // Database
     runtimeOnly 'org.postgresql:postgresql'
 
