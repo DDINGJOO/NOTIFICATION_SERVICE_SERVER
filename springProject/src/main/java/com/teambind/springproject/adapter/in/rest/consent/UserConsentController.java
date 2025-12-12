@@ -1,6 +1,6 @@
 package com.teambind.springproject.adapter.in.rest.consent;
 
-import com.teambind.springproject.adapter.in.rest.consent.dto.NightAdConsentRequest;
+import com.teambind.springproject.adapter.in.rest.consent.dto.ChannelConsentRequest;
 import com.teambind.springproject.adapter.in.rest.consent.dto.UserConsentResponse;
 import com.teambind.springproject.application.port.in.UserConsentUseCase;
 import com.teambind.springproject.common.exceptions.application.UserConsentNotFoundException;
@@ -46,7 +46,7 @@ public class UserConsentController {
     @PutMapping("/{userId}/night-ad")
     public ResponseEntity<UserConsentResponse> changeNightAdConsent(
             @PathVariable String userId,
-            @Valid @RequestBody NightAdConsentRequest request) {
+            @Valid @RequestBody ChannelConsentRequest request) {
         log.debug("Change night ad consent: userId={}, consented={}", userId, request.getConsented());
 
         try {
@@ -55,9 +55,66 @@ public class UserConsentController {
             throw new UserConsentNotFoundException(userId);
         }
 
+        return getUpdatedConsentResponse(userId);
+    }
+
+    /**
+     * SMS 채널 동의 변경
+     */
+    @PutMapping("/{userId}/sms")
+    public ResponseEntity<UserConsentResponse> changeSmsConsent(
+            @PathVariable String userId,
+            @Valid @RequestBody ChannelConsentRequest request) {
+        log.debug("Change SMS consent: userId={}, consented={}", userId, request.getConsented());
+
+        try {
+            userConsentUseCase.changeSmsConsent(userId, request.getConsented());
+        } catch (IllegalArgumentException e) {
+            throw new UserConsentNotFoundException(userId);
+        }
+
+        return getUpdatedConsentResponse(userId);
+    }
+
+    /**
+     * 이메일 채널 동의 변경
+     */
+    @PutMapping("/{userId}/email")
+    public ResponseEntity<UserConsentResponse> changeEmailConsent(
+            @PathVariable String userId,
+            @Valid @RequestBody ChannelConsentRequest request) {
+        log.debug("Change email consent: userId={}, consented={}", userId, request.getConsented());
+
+        try {
+            userConsentUseCase.changeEmailConsent(userId, request.getConsented());
+        } catch (IllegalArgumentException e) {
+            throw new UserConsentNotFoundException(userId);
+        }
+
+        return getUpdatedConsentResponse(userId);
+    }
+
+    /**
+     * 알림톡 채널 동의 변경
+     */
+    @PutMapping("/{userId}/kakao")
+    public ResponseEntity<UserConsentResponse> changeKakaoConsent(
+            @PathVariable String userId,
+            @Valid @RequestBody ChannelConsentRequest request) {
+        log.debug("Change Kakao consent: userId={}, consented={}", userId, request.getConsented());
+
+        try {
+            userConsentUseCase.changeKakaoConsent(userId, request.getConsented());
+        } catch (IllegalArgumentException e) {
+            throw new UserConsentNotFoundException(userId);
+        }
+
+        return getUpdatedConsentResponse(userId);
+    }
+
+    private ResponseEntity<UserConsentResponse> getUpdatedConsentResponse(String userId) {
         UserConsent userConsent = userConsentUseCase.getUserConsent(userId)
                 .orElseThrow(() -> new UserConsentNotFoundException(userId));
-
         return ResponseEntity.ok(UserConsentResponse.fromDomain(userConsent));
     }
 }
