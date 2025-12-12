@@ -1,5 +1,7 @@
 package com.teambind.springproject.application.port.in;
 
+import com.teambind.springproject.domain.model.notification.NotificationType;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,25 +10,19 @@ import java.util.Map;
 public interface SendPushUseCase {
 
     /**
-     * 푸시 알림 발송
+     * 푸시 알림 일괄 발송
      *
-     * @param userId 사용자 ID
-     * @param deviceToken FCM 디바이스 토큰
+     * @param type 알림 타입 (TRANSACTIONAL/MARKETING)
+     * @param targets 발송 대상 목록
      * @param title 알림 제목
      * @param body 알림 본문
-     * @return 발송 이력 ID
+     * @param data 추가 데이터 (nullable)
+     * @return 발송 이력 ID 목록
      */
-    Long sendPush(String userId, String deviceToken, String title, String body);
+    List<Long> sendPush(NotificationType type, List<PushTarget> targets, String title, String body, Map<String, String> data);
 
     /**
-     * 데이터 포함 푸시 알림 발송
-     *
-     * @param userId 사용자 ID
-     * @param deviceToken FCM 디바이스 토큰
-     * @param title 알림 제목
-     * @param body 알림 본문
-     * @param data 추가 데이터
-     * @return 발송 이력 ID
+     * 푸시 발송 대상
      */
-    Long sendPush(String userId, String deviceToken, String title, String body, Map<String, String> data);
+    record PushTarget(String userId, String deviceToken) {}
 }

@@ -1,5 +1,6 @@
 package com.teambind.springproject.adapter.in.rest.push.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,10 +11,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SendPushResponse {
 
-    private Long notificationId;
+    private List<Long> notificationIds;
+    private int totalCount;
+    private int successCount;
     private String status;
 
-    public static SendPushResponse success(Long notificationId) {
-        return new SendPushResponse(notificationId, "ACCEPTED");
+    public static SendPushResponse success(List<Long> notificationIds) {
+        return new SendPushResponse(
+                notificationIds,
+                notificationIds.size(),
+                notificationIds.size(),
+                "ACCEPTED"
+        );
     }
 }
