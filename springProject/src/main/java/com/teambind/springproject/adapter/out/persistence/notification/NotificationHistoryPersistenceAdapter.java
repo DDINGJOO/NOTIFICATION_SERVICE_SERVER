@@ -62,4 +62,16 @@ public class NotificationHistoryPersistenceAdapter implements NotificationHistor
                 .map(NotificationHistoryEntity::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<NotificationHistory> findDeadLetterQueue() {
+        return jpaRepository.findByStatusOrderByCreatedAtDesc(NotificationStatus.DEAD_LETTER).stream()
+                .map(NotificationHistoryEntity::toDomain)
+                .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaRepository.deleteById(id);
+    }
 }
