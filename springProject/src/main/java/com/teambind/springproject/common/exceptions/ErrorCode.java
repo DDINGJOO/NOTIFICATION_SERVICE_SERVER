@@ -17,6 +17,9 @@ public enum ErrorCode {
 	REQUIRED_FIELD_MISSING("VALIDATION_002", "Required field is missing", HttpStatus.BAD_REQUEST),
 	INVALID_FORMAT("VALIDATION_003", "Invalid format", HttpStatus.BAD_REQUEST),
 	VALUE_OUT_OF_RANGE("VALIDATION_004", "Value is out of range", HttpStatus.BAD_REQUEST),
+
+	// 동의 관련 에러 (CONSENT_0XX)
+	USER_CONSENT_NOT_FOUND("CONSENT_001", "User consent not found", HttpStatus.NOT_FOUND),
 	
 	// 시스템 에러 (SYSTEM_0XX)
 	INTERNAL_SERVER_ERROR("SYSTEM_001", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
