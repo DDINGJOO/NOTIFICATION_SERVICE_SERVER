@@ -33,6 +33,9 @@ public class UserConsentEntity {
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "service_consent", nullable = false)
     private boolean serviceConsent;
 
@@ -42,6 +45,15 @@ public class UserConsentEntity {
     @Column(name = "night_ad_consent", nullable = false)
     private boolean nightAdConsent;
 
+    @Column(name = "sms_consent", nullable = false)
+    private boolean smsConsent;
+
+    @Column(name = "email_consent", nullable = false)
+    private boolean emailConsent;
+
+    @Column(name = "kakao_consent", nullable = false)
+    private boolean kakaoConsent;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -50,13 +62,18 @@ public class UserConsentEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    private UserConsentEntity(Long id, String userId, boolean serviceConsent,
-                              boolean marketingConsent, boolean nightAdConsent) {
+    private UserConsentEntity(Long id, String userId, String phoneNumber,
+                              boolean serviceConsent, boolean marketingConsent, boolean nightAdConsent,
+                              boolean smsConsent, boolean emailConsent, boolean kakaoConsent) {
         this.id = id;
         this.userId = userId;
+        this.phoneNumber = phoneNumber;
         this.serviceConsent = serviceConsent;
         this.marketingConsent = marketingConsent;
         this.nightAdConsent = nightAdConsent;
+        this.smsConsent = smsConsent;
+        this.emailConsent = emailConsent;
+        this.kakaoConsent = kakaoConsent;
     }
 
     /**
@@ -66,9 +83,13 @@ public class UserConsentEntity {
         UserConsentEntity entity = new UserConsentEntity(
                 userConsent.getId(),
                 userConsent.getUserId(),
+                userConsent.getPhoneNumber(),
                 userConsent.getConsentSettings().isServiceConsent(),
                 userConsent.getConsentSettings().isMarketingConsent(),
-                userConsent.getConsentSettings().isNightAdConsent()
+                userConsent.getConsentSettings().isNightAdConsent(),
+                userConsent.getConsentSettings().isSmsConsent(),
+                userConsent.getConsentSettings().isEmailConsent(),
+                userConsent.getConsentSettings().isKakaoConsent()
         );
         entity.createdAt = userConsent.getCreatedAt();
         entity.updatedAt = userConsent.getUpdatedAt();
@@ -82,9 +103,13 @@ public class UserConsentEntity {
         return UserConsent.restore(
                 id,
                 userId,
+                phoneNumber,
                 serviceConsent,
                 marketingConsent,
                 nightAdConsent,
+                smsConsent,
+                emailConsent,
+                kakaoConsent,
                 createdAt,
                 updatedAt
         );
@@ -93,9 +118,20 @@ public class UserConsentEntity {
     /**
      * 동의 정보 업데이트
      */
-    public void updateConsent(boolean serviceConsent, boolean marketingConsent, boolean nightAdConsent) {
+    public void updateConsent(boolean serviceConsent, boolean marketingConsent, boolean nightAdConsent,
+                              boolean smsConsent, boolean emailConsent, boolean kakaoConsent) {
         this.serviceConsent = serviceConsent;
         this.marketingConsent = marketingConsent;
         this.nightAdConsent = nightAdConsent;
+        this.smsConsent = smsConsent;
+        this.emailConsent = emailConsent;
+        this.kakaoConsent = kakaoConsent;
+    }
+
+    /**
+     * 전화번호 업데이트
+     */
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
