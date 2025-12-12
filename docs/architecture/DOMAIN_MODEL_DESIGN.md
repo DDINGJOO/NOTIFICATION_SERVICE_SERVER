@@ -63,20 +63,21 @@ Notification (Aggregate Root)
 ### 주요 책임
 
 1. **발송 가능 여부 판단**
-   - 수신자 정보 유효성 검증
-   - 채널별 필수 정보 확인
+	- 수신자 정보 유효성 검증
+	- 채널별 필수 정보 확인
 
 2. **알림 유형별 규칙 적용**
-   - 트랜잭션: 즉시 발송
-   - 서비스: 동의 확인 필요
-   - 광고: 동의 + 야간 규칙 적용
+	- 트랜잭션: 즉시 발송
+	- 서비스: 동의 확인 필요
+	- 광고: 동의 + 야간 규칙 적용
 
 3. **채널 라우팅**
-   - 적합한 채널 Adapter 선택
+	- 적합한 채널 Adapter 선택
 
 ### Value Objects
 
 #### NotificationId
+
 ```java
 public record NotificationId(String value) {
     public NotificationId {
@@ -90,6 +91,7 @@ public record NotificationId(String value) {
 ```
 
 #### Recipient
+
 ```java
 public record Recipient(
     String userId,
@@ -121,6 +123,7 @@ public record Recipient(
 ```
 
 #### NotificationContent
+
 ```java
 public record NotificationContent(
     String title,
@@ -138,6 +141,7 @@ public record NotificationContent(
 ### Enums
 
 #### NotificationChannel
+
 ```java
 public enum NotificationChannel {
     EMAIL,
@@ -148,6 +152,7 @@ public enum NotificationChannel {
 ```
 
 #### NotificationType
+
 ```java
 public enum NotificationType {
     TRANSACTION,  // 트랜잭션 알림 (동의 불필요)
@@ -181,21 +186,22 @@ UserConsent (Aggregate Root)
 ### 주요 책임
 
 1. **동의 상태 관리**
-   - 서비스 알림 수신 동의
-   - 광고성 정보 수신 동의
-   - 야간 광고 수신 동의
+	- 서비스 알림 수신 동의
+	- 광고성 정보 수신 동의
+	- 야간 광고 수신 동의
 
 2. **동의 여부 확인**
-   - 알림 유형별 발송 가능 여부 판단
-   - 야간 시간대 발송 가능 여부 판단
+	- 알림 유형별 발송 가능 여부 판단
+	- 야간 시간대 발송 가능 여부 판단
 
 3. **동의 변경 이력 관리**
-   - 변경 시점 기록
-   - 이전/이후 값 추적
+	- 변경 시점 기록
+	- 이전/이후 값 추적
 
 ### Value Objects
 
 #### ConsentSettings
+
 ```java
 public record ConsentSettings(
     boolean serviceNotification,
@@ -223,6 +229,7 @@ public record ConsentSettings(
 ### 비즈니스 규칙
 
 #### 야간 시간대 판단
+
 ```java
 public class NightTimeChecker {
     private static final LocalTime NIGHT_START = LocalTime.of(21, 0);
@@ -262,21 +269,22 @@ NotificationHistory (Aggregate Root)
 ### 주요 책임
 
 1. **발송 결과 기록**
-   - 성공/실패 상태 저장
-   - 실패 사유 기록
-   - 채널별 메타데이터 저장
+	- 성공/실패 상태 저장
+	- 실패 사유 기록
+	- 채널별 메타데이터 저장
 
 2. **재시도 상태 관리**
-   - 재시도 횟수 추적
-   - 재시도 대상 여부 판단
+	- 재시도 횟수 추적
+	- 재시도 대상 여부 판단
 
 3. **통계 집계 지원**
-   - 기간별 발송량 조회
-   - 채널별/유형별 성공률 계산
+	- 기간별 발송량 조회
+	- 채널별/유형별 성공률 계산
 
 ### Enums
 
 #### SendStatus
+
 ```java
 public enum SendStatus {
     PENDING,    // 발송 대기
@@ -290,6 +298,7 @@ public enum SendStatus {
 ### Value Objects
 
 #### FailureReason
+
 ```java
 public record FailureReason(
     String code,
@@ -336,20 +345,21 @@ InAppNotification (Aggregate Root)
 ### 주요 책임
 
 1. **인앱 알림 저장**
-   - 사용자별 알림 목록 관리
-   - 알림 내용 및 액션 URL 저장
+	- 사용자별 알림 목록 관리
+	- 알림 내용 및 액션 URL 저장
 
 2. **읽음 상태 관리**
-   - 미읽음/읽음 상태 전환
-   - 읽음 시각 기록
+	- 미읽음/읽음 상태 전환
+	- 읽음 시각 기록
 
 3. **알림 목록 조회**
-   - 사용자별 알림 목록
-   - 미읽음 알림 개수
+	- 사용자별 알림 목록
+	- 미읽음 알림 개수
 
 ### Enums
 
 #### ReadStatus
+
 ```java
 public enum ReadStatus {
     UNREAD,
@@ -439,6 +449,7 @@ public class NotificationDomainService {
 ## Repository Interface (Outbound Port)
 
 ### NotificationHistoryRepository
+
 ```java
 public interface NotificationHistoryRepository {
     void save(NotificationHistory history);
@@ -450,6 +461,7 @@ public interface NotificationHistoryRepository {
 ```
 
 ### UserConsentRepository
+
 ```java
 public interface UserConsentRepository {
     void save(UserConsent consent);
@@ -459,6 +471,7 @@ public interface UserConsentRepository {
 ```
 
 ### InAppNotificationRepository
+
 ```java
 public interface InAppNotificationRepository {
     void save(InAppNotification notification);
@@ -475,6 +488,7 @@ public interface InAppNotificationRepository {
 ## 팩토리 패턴 적용
 
 ### NotificationFactory
+
 ```java
 public class NotificationFactory {
 
