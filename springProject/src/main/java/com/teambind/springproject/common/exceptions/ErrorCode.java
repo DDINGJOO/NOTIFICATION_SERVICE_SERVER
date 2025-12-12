@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 	// Place 관련 에러 (PLACE_0XX)
-
+	
 	// 권한 관련 에러 (AUTH_0XX)
 	UNAUTHORIZED("AUTH_001", "Unauthorized access", HttpStatus.UNAUTHORIZED),
 	FORBIDDEN("AUTH_002", "Access forbidden", HttpStatus.FORBIDDEN),
@@ -17,7 +17,7 @@ public enum ErrorCode {
 	REQUIRED_FIELD_MISSING("VALIDATION_002", "Required field is missing", HttpStatus.BAD_REQUEST),
 	INVALID_FORMAT("VALIDATION_003", "Invalid format", HttpStatus.BAD_REQUEST),
 	VALUE_OUT_OF_RANGE("VALIDATION_004", "Value is out of range", HttpStatus.BAD_REQUEST),
-
+	
 	// 동의 관련 에러 (CONSENT_0XX)
 	USER_CONSENT_NOT_FOUND("CONSENT_001", "User consent not found", HttpStatus.NOT_FOUND),
 	
