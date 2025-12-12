@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NightAdConsentRequest {
-
-    @NotNull(message = "consented is required")
-    private Boolean consented;
+	
+	@NotNull(message = "consented is required")
+	private Boolean consented;
 }
