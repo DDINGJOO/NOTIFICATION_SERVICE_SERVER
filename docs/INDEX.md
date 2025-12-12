@@ -16,9 +16,13 @@ docs/
 ├── requirements/                         # 요구사항 문서
 │   └── NOTIFICATION_REQUIREMENTS.md      # 비즈니스 요구사항 정의
 │
-└── architecture/                         # 아키텍처 문서
-    ├── ARCHITECTURE_ANALYSIS.md          # 아키텍처 분석 및 결정
-    └── DOMAIN_MODEL_DESIGN.md            # 도메인 모델 설계
+├── architecture/                         # 아키텍처 문서
+│   ├── ARCHITECTURE_ANALYSIS.md          # 아키텍처 분석 및 결정
+│   └── DOMAIN_MODEL_DESIGN.md            # 도메인 모델 설계
+│
+└── api/                                  # API 명세 문서
+    ├── REST_API.md                       # REST API 명세
+    └── KAFKA_EVENTS.md                   # Kafka 이벤트 명세
 ```
 
 ---
@@ -110,6 +114,26 @@ docs/
 
 ---
 
+### API 명세 문서
+
+| 문서 | 위치 | 설명 |
+|------|------|------|
+| REST_API.md | [docs/api/REST_API.md](api/REST_API.md) | REST API 명세 (SMS, Email, Push, Kakao, 동의 관리) |
+| KAFKA_EVENTS.md | [docs/api/KAFKA_EVENTS.md](api/KAFKA_EVENTS.md) | Kafka 이벤트 스키마 명세 |
+
+**주요 내용:**
+- 채널별 발송 API (SMS, Email, Push, Kakao)
+- 동의 관리 API
+- Kafka Consumer 이벤트 스키마
+- 인증 이벤트 (기존 Auth 서버 호환)
+
+**읽어야 할 때:**
+- API 연동 개발 시
+- 다른 서비스에서 알림 발송 요청 시
+- Kafka 이벤트 발행 시
+
+---
+
 ### 프로젝트 관리 문서
 
 | 문서 | 위치 | 설명 |
@@ -120,7 +144,6 @@ docs/
 **읽어야 할 때:**
 - 이슈/PR 생성 시
 - 개발 워크플로우 확인 시
-- Kafka 토픽/이벤트 스키마 확인 시
 
 ---
 
@@ -178,10 +201,11 @@ docs/
 |-------------|-----------|
 | 알림 채널 종류 | INFO.md > 핵심 기능 > 알림 채널 |
 | 수신 동의 규칙 | NOTIFICATION_REQUIREMENTS.md > 수신 동의 관리 |
-| Kafka 토픽 | PROJECT_SETUP.md > Kafka 토픽 및 이벤트 스키마 |
+| Kafka 토픽 | KAFKA_EVENTS.md |
+| REST API | REST_API.md |
 | 도메인 모델 | DOMAIN_MODEL_DESIGN.md |
 | 아키텍처 패턴 | ARCHITECTURE_ANALYSIS.md |
 
 ---
 
-**Last Updated**: 2025-12-11
+**Last Updated**: 2025-12-12
