@@ -22,8 +22,14 @@ public class UserConsentPersistenceAdapter implements UserConsentPort {
                     existing.updateConsent(
                             userConsent.getConsentSettings().isServiceConsent(),
                             userConsent.getConsentSettings().isMarketingConsent(),
-                            userConsent.getConsentSettings().isNightAdConsent()
+                            userConsent.getConsentSettings().isNightAdConsent(),
+                            userConsent.getConsentSettings().isSmsConsent(),
+                            userConsent.getConsentSettings().isEmailConsent(),
+                            userConsent.getConsentSettings().isKakaoConsent()
                     );
+                    if (userConsent.getPhoneNumber() != null) {
+                        existing.updatePhoneNumber(userConsent.getPhoneNumber());
+                    }
                     return existing;
                 })
                 .orElseGet(() -> UserConsentEntity.fromDomain(userConsent));
