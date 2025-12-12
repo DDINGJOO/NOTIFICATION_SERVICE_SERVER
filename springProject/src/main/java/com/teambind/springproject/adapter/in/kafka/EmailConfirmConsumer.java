@@ -12,25 +12,25 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class EmailConfirmConsumer {
-
-    private final EmailPort emailPort;
-    private final ObjectMapper objectMapper;
-
-    @KafkaListener(
-            topics = "email-confirm-request",
-            groupId = "notification-consumer-group"
-    )
-    public void consume(String message) {
-        log.debug("Received email-confirm-request: {}", message);
-
-        try {
-            EmailConfirmEvent event = objectMapper.readValue(message, EmailConfirmEvent.class);
-            emailPort.sendVerificationEmail(event.getEmail(), event.getCode());
-            log.info("Verification email sent to: {}", event.getEmail());
-
-        } catch (Exception e) {
-            log.error("Failed to process email-confirm-request: {}", message, e);
-            throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
-        }
-    }
+	
+	private final EmailPort emailPort;
+	private final ObjectMapper objectMapper;
+	
+	@KafkaListener(
+			topics = "email-confirm-request",
+			groupId = "notification-consumer-group"
+	)
+	public void consume(String message) {
+		log.debug("Received email-confirm-request: {}", message);
+		
+		try {
+			EmailConfirmEvent event = objectMapper.readValue(message, EmailConfirmEvent.class);
+			emailPort.sendVerificationEmail(event.getEmail(), event.getCode());
+			log.info("Verification email sent to: {}", event.getEmail());
+			
+		} catch (Exception e) {
+			log.error("Failed to process email-confirm-request: {}", message, e);
+			throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+		}
+	}
 }
