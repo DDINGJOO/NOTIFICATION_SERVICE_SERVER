@@ -1,3 +1,8 @@
+# Environment
+.env
+*.env
+**/.env
+
 # Claude Code
 .claude/
 
