@@ -49,6 +49,9 @@ solapi:
   api-secret: ${SOLAPI_API_SECRET}
   from-number: ${SOLAPI_FROM_NUMBER}
 
+firebase:
+  credentials-path: ${FIREBASE_CREDENTIALS_PATH:firebase-service-account.json}
+
 logging:
   level:
     org.springframework.kafka: INFO
