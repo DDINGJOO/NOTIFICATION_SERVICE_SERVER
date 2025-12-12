@@ -3,7 +3,9 @@ package com.teambind.springproject.adapter.in.rest.sms;
 import com.teambind.springproject.adapter.in.rest.sms.dto.SendSmsRequest;
 import com.teambind.springproject.adapter.in.rest.sms.dto.SendSmsResponse;
 import com.teambind.springproject.application.port.in.SendSmsUseCase;
+import com.teambind.springproject.application.port.in.SendSmsUseCase.SmsTarget;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +30,18 @@ public class SmsController {
      */
     @PostMapping("/send")
     public ResponseEntity<SendSmsResponse> sendSms(@Valid @RequestBody SendSmsRequest request) {
-        log.debug("SMS 발송 요청. userId={}, phoneNumber={}", request.getUserId(), request.getPhoneNumber());
+        log.debug("SMS 발송 요청. type={}, targetCount={}", request.getType(), request.getTargets().size());
 
-        Long notificationId = sendSmsUseCase.sendSms(
-                request.getUserId(),
-                request.getPhoneNumber(),
+        List<SmsTarget> targets = request.getTargets().stream()
+                .map(t -> new SmsTarget(t.getUserId(), t.getPhoneNumber()))
+                .toList();
+
+        List<Long> notificationIds = sendSmsUseCase.sendSms(
+                request.getType(),
+                targets,
                 request.getContent()
         );
 
-        return ResponseEntity.ok(SendSmsResponse.success(notificationId));
+        return ResponseEntity.ok(SendSmsResponse.success(notificationIds));
     }
 }

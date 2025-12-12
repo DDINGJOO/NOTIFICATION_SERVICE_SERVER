@@ -10,6 +10,8 @@ import com.teambind.springproject.domain.model.notification.FailureReason;
 import com.teambind.springproject.domain.model.notification.NotificationChannel;
 import com.teambind.springproject.domain.model.notification.NotificationHistory;
 import com.teambind.springproject.domain.model.notification.NotificationType;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,24 +32,36 @@ public class SendSmsService implements SendSmsUseCase {
 
     @Override
     @Transactional
-    public Long sendSms(String userId, String phoneNumber, String content) {
-        log.info("SMS 발송 요청. userId={}, phoneNumber={}", userId, phoneNumber);
+    public List<Long> sendSms(NotificationType type, List<SmsTarget> targets, String content) {
+        log.info("SMS 일괄 발송 요청. type={}, targetCount={}", type, targets.size());
 
+        List<Long> historyIds = new ArrayList<>();
+
+        for (SmsTarget target : targets) {
+            Long historyId = sendSingleSms(type, target, content);
+            historyIds.add(historyId);
+        }
+
+        log.info("SMS 일괄 발송 완료. totalCount={}", historyIds.size());
+        return historyIds;
+    }
+
+    private Long sendSingleSms(NotificationType type, SmsTarget target, String content) {
         Long historyId = keyGenerator.generateLongKey();
         NotificationHistory history = NotificationHistory.create(
                 historyId,
-                userId,
-                phoneNumber,
+                target.userId(),
+                target.phoneNumber(),
                 NotificationChannel.SMS,
-                NotificationType.TRANSACTIONAL,
+                type,
                 content
         );
 
-        // 사용자 동의 확인 (마케팅 알림인 경우)
-        if (history.isMarketing()) {
-            boolean consentGranted = checkSmsConsent(userId);
+        // 마케팅 알림인 경우 동의 확인
+        if (type == NotificationType.MARKETING) {
+            boolean consentGranted = checkSmsConsent(target.userId());
             if (!consentGranted) {
-                log.warn("SMS 동의 없음. userId={}", userId);
+                log.warn("SMS 동의 없음. userId={}", target.userId());
                 history.markAsFailed(FailureReason.consentNotGranted("SMS 수신 동의가 없습니다."));
                 historyPort.save(history);
                 return historyId;
@@ -55,11 +69,11 @@ public class SendSmsService implements SendSmsUseCase {
         }
 
         try {
-            smsPort.send(phoneNumber, content);
+            smsPort.send(target.phoneNumber(), content);
             history.markAsSuccess();
-            log.info("SMS 발송 성공. historyId={}", historyId);
+            log.debug("SMS 발송 성공. historyId={}, userId={}", historyId, target.userId());
         } catch (Exception e) {
-            log.error("SMS 발송 실패. historyId={}", historyId, e);
+            log.error("SMS 발송 실패. historyId={}, userId={}", historyId, target.userId(), e);
             history.markAsFailed(FailureReason.providerError(e.getMessage()));
         }
 

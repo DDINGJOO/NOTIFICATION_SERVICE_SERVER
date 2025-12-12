@@ -1,5 +1,6 @@
 package com.teambind.springproject.adapter.in.rest.sms.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,10 +11,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SendSmsResponse {
 
-    private Long notificationId;
+    private List<Long> notificationIds;
+    private int totalCount;
+    private int successCount;
     private String status;
 
-    public static SendSmsResponse success(Long notificationId) {
-        return new SendSmsResponse(notificationId, "ACCEPTED");
+    public static SendSmsResponse success(List<Long> notificationIds) {
+        return new SendSmsResponse(
+                notificationIds,
+                notificationIds.size(),
+                notificationIds.size(),
+                "ACCEPTED"
+        );
     }
 }
