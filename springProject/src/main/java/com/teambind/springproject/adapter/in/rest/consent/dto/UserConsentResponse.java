@@ -13,17 +13,25 @@ import lombok.Getter;
 public class UserConsentResponse {
 
     private String userId;
+    private String phoneNumber;
     private boolean serviceConsent;
     private boolean marketingConsent;
     private boolean nightAdConsent;
+    private boolean smsConsent;
+    private boolean emailConsent;
+    private boolean kakaoConsent;
     private LocalDateTime updatedAt;
 
     public static UserConsentResponse fromDomain(UserConsent userConsent) {
         return UserConsentResponse.builder()
                 .userId(userConsent.getUserId())
+                .phoneNumber(userConsent.getPhoneNumber())
                 .serviceConsent(userConsent.getConsentSettings().isServiceConsent())
                 .marketingConsent(userConsent.getConsentSettings().isMarketingConsent())
                 .nightAdConsent(userConsent.getConsentSettings().isNightAdConsent())
+                .smsConsent(userConsent.getConsentSettings().isSmsConsent())
+                .emailConsent(userConsent.getConsentSettings().isEmailConsent())
+                .kakaoConsent(userConsent.getConsentSettings().isKakaoConsent())
                 .updatedAt(userConsent.getUpdatedAt())
                 .build();
     }
