@@ -43,6 +43,26 @@ public class UserConsentService implements UserConsentUseCase {
     }
 
     @Override
+    public void handlePhoneNumberVerified(String userId, String phoneNumber) {
+        log.debug("Processing phone number verified: userId={}, phoneNumber={}", userId, phoneNumber);
+
+        UserConsent userConsent = userConsentPort.findByUserId(userId)
+                .map(existing -> {
+                    existing.updatePhoneNumber(phoneNumber);
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    UserConsent newConsent = UserConsent.createNew(keyGenerator.generateLongKey(), userId);
+                    newConsent.updatePhoneNumber(phoneNumber);
+                    return newConsent;
+                });
+
+        UserConsent saved = userConsentPort.save(userConsent);
+        userConsentCachePort.save(saved);
+        log.info("Phone number verified: userId={}, phoneNumber={}", userId, phoneNumber);
+    }
+
+    @Override
     public void changeNightAdConsent(String userId, boolean consented) {
         log.debug("Processing night ad consent change: userId={}, consented={}", userId, consented);
 
@@ -53,6 +73,45 @@ public class UserConsentService implements UserConsentUseCase {
         UserConsent saved = userConsentPort.save(userConsent);
         userConsentCachePort.save(saved);
         log.info("Night ad consent updated: userId={}, consented={}", userId, consented);
+    }
+
+    @Override
+    public void changeSmsConsent(String userId, boolean consented) {
+        log.debug("Processing SMS consent change: userId={}, consented={}", userId, consented);
+
+        UserConsent userConsent = findByUserIdWithCache(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User consent not found: " + userId));
+
+        userConsent.changeSmsConsent(consented);
+        UserConsent saved = userConsentPort.save(userConsent);
+        userConsentCachePort.save(saved);
+        log.info("SMS consent updated: userId={}, consented={}", userId, consented);
+    }
+
+    @Override
+    public void changeEmailConsent(String userId, boolean consented) {
+        log.debug("Processing email consent change: userId={}, consented={}", userId, consented);
+
+        UserConsent userConsent = findByUserIdWithCache(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User consent not found: " + userId));
+
+        userConsent.changeEmailConsent(consented);
+        UserConsent saved = userConsentPort.save(userConsent);
+        userConsentCachePort.save(saved);
+        log.info("Email consent updated: userId={}, consented={}", userId, consented);
+    }
+
+    @Override
+    public void changeKakaoConsent(String userId, boolean consented) {
+        log.debug("Processing Kakao consent change: userId={}, consented={}", userId, consented);
+
+        UserConsent userConsent = findByUserIdWithCache(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User consent not found: " + userId));
+
+        userConsent.changeKakaoConsent(consented);
+        UserConsent saved = userConsentPort.save(userConsent);
+        userConsentCachePort.save(saved);
+        log.info("Kakao consent updated: userId={}, consented={}", userId, consented);
     }
 
     @Override
@@ -75,6 +134,30 @@ public class UserConsentService implements UserConsentUseCase {
         return findByUserIdWithCache(userId)
                 .map(UserConsent::canReceiveServiceNotification)
                 .orElse(true);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canReceiveSmsAd(String userId) {
+        return findByUserIdWithCache(userId)
+                .map(UserConsent::canReceiveSmsAd)
+                .orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canReceiveEmailAd(String userId) {
+        return findByUserIdWithCache(userId)
+                .map(UserConsent::canReceiveEmailAd)
+                .orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean canReceiveKakaoAd(String userId) {
+        return findByUserIdWithCache(userId)
+                .map(UserConsent::canReceiveKakaoAd)
+                .orElse(false);
     }
 
     /**
