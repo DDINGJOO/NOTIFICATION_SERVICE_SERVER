@@ -12,3 +12,16 @@
 
 # Logs
 *.log
+
+# Environment files
+.env
+.env.*
+!.env.*.example
+
+# Build output
+build/
+out/
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar

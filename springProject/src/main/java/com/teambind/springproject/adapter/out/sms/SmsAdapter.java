@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class SmsAdapter implements SmsPort {
 
-    private static final String SOLAPI_API_URL = "https://api.solapi.com/messages/v4/send";
+    private static final String SOLAPI_API_URL = "https://api.solapi.com/messages/v4/send-many/detail";
     private static final int SMS_BYTE_LIMIT = 90;
 
     private final RestTemplate restTemplate;
@@ -118,7 +118,6 @@ public class SmsAdapter implements SmsPort {
         message.put("type", determineMessageType(content));
 
         Map<String, Object> body = new HashMap<>();
-        body.put("message", message);
         body.put("messages", List.of(message));
 
         return body;

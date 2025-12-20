@@ -6,6 +6,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.teambind.springproject.application.port.out.PushPort;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PushAdapter implements PushPort {
 
-    private final FirebaseMessaging firebaseMessaging;
+    private final Optional<FirebaseMessaging> firebaseMessaging;
 
     @Override
     public void send(String deviceToken, String title, String body) {
@@ -27,6 +28,11 @@ public class PushAdapter implements PushPort {
 
     @Override
     public void send(String deviceToken, String title, String body, Map<String, String> data) {
+        if (firebaseMessaging.isEmpty()) {
+            log.warn("Firebase가 초기화되지 않아 Push 알림을 전송할 수 없습니다. deviceToken={}", deviceToken);
+            return;
+        }
+
         log.debug("Sending push notification to device: {}", deviceToken);
 
         try {
@@ -43,7 +49,7 @@ public class PushAdapter implements PushPort {
                 messageBuilder.putAllData(data);
             }
 
-            String response = firebaseMessaging.send(messageBuilder.build());
+            String response = firebaseMessaging.get().send(messageBuilder.build());
             log.info("Push notification sent successfully. messageId={}", response);
 
         } catch (FirebaseMessagingException e) {
